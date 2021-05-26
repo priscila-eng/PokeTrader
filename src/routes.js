@@ -1,6 +1,6 @@
-import { history } from 'history'
-import { Route, Switch, Router } from 'react-router'
-import Calculator from './pages/Calculator'
+import { history } from "./utils/history";
+import { Route, Switch, Router } from "react-router";
+import Calculator from "./pages/Calculator";
 function Routes() {
   return (
     <Router history={history}>
