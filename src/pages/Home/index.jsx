@@ -60,7 +60,6 @@ const Home = () => {
               base_experience: response.data.base_experience,
               weight: response.data.weight,
               height: response.data.height,
-              order: response.data.order,
             });
             setLoadingA(false);
           })
@@ -78,7 +77,6 @@ const Home = () => {
               base_experience: response.data.base_experience,
               weight: response.data.weight,
               height: response.data.height,
-              order: response.data.order,
             });
             setLoadingB(false);
           })
@@ -87,9 +85,10 @@ const Home = () => {
     });
   };
   const RedirectViewResults = () => {
-    localStorage.setItem("pokemonsA", pokemonsInfoA);
-    localStorage.setItem("pokemonsB", pokemonsInfoB);
+    localStorage.setItem("new_pokemonsA", JSON.stringify(pokemonsInfoA));
+    localStorage.setItem("new_pokemonsB", JSON.stringify(pokemonsInfoB));
     history.push("/results");
+    window.location.reload();
   };
 
   return (
@@ -170,10 +169,7 @@ const Home = () => {
           {loadingA && loadingB ? (
             <></>
           ) : (
-            <button onClick={() => RedirectViewResults()}>
-              {" "}
-              Ver resultado{" "}
-            </button>
+            <button onClick={() => RedirectViewResults()}>Ver resultado</button>
           )}
         </div>
       </Team>
