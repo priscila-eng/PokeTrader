@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Calculator from "../../components/Calculator";
 import {
   DisableA,
   DisableB,
@@ -9,29 +8,101 @@ import {
   LimitPokemonA,
   LimitPokemonB,
 } from "../../components/Pokemons";
-import { Container } from "./style";
+import api from "../../services/api";
+import { history } from "../../utils/history";
+import { Container, Team, Error } from "./style";
 
 const Home = () => {
   const [valueA, setValueA] = useState();
   const [valueB, setValueB] = useState();
+  const [pokemonsInfoA] = useState([]);
+  const [pokemonsInfoB] = useState([]);
   const [pokemonsTeamA, setPokemonsTeamA] = useState([]);
   const [pokemonsTeamB, setPokemonsTeamB] = useState([]);
   const [pokemonTotalA, setPokemonTotalA] = useState(1);
   const [pokemonTotalB, setPokemonTotalB] = useState(1);
   const [disableA, setDisableA] = useState(false);
   const [disableB, setDisableB] = useState(false);
+  const [loadingA, setLoadingA] = useState(true);
+  const [loadingB, setLoadingB] = useState(true);
+  const [errorA, setErrorA] = useState(false);
+  const [errorB, setErrorB] = useState(false);
+
+  const VerificationA = () => {
+    if (valueA !== undefined) {
+      setPokemonTotalA(LimitPokemonA(pokemonTotalA));
+      setDisableA(DisableA(pokemonTotalA));
+      setErrorA(false);
+    } else {
+      setErrorA(true);
+    }
+  };
+  const VerificationB = () => {
+    if (valueB !== undefined) {
+      setPokemonTotalB(LimitPokemonB(pokemonTotalB));
+      setDisableB(DisableB(pokemonTotalB));
+      setErrorB(false);
+    } else {
+      setErrorB(true);
+    }
+  };
+
+  const GetPokemonsInfo = (pokemonsA, pokemonsB) => {
+    console.log(pokemonsA, pokemonsB);
+    pokemonsA.map(async (pokemon) => {
+      setLoadingA(true);
+      if (pokemon !== undefined) {
+        await api
+          .get(`/pokemon/${pokemon}`)
+          .then((response) => {
+            pokemonsInfoA.push({
+              name: pokemon,
+              base_experience: response.data.base_experience,
+              weight: response.data.weight,
+              height: response.data.height,
+              order: response.data.order,
+            });
+            setLoadingA(false);
+          })
+          .catch((error) => console.log(error));
+      }
+    });
+    pokemonsB.forEach(async (pokemon) => {
+      setLoadingB(true);
+      if (pokemon !== undefined) {
+        await api
+          .get(`/pokemon/${pokemon}`)
+          .then((response) => {
+            pokemonsInfoB.push({
+              name: pokemon,
+              base_experience: response.data.base_experience,
+              weight: response.data.weight,
+              height: response.data.height,
+              order: response.data.order,
+            });
+            setLoadingB(false);
+          })
+          .catch((error) => console.log(error));
+      }
+    });
+  };
+  const RedirectViewResults = () => {
+    localStorage.setItem("pokemonsA", pokemonsInfoA);
+    localStorage.setItem("pokemonsB", pokemonsInfoB);
+    history.push("/results");
+  };
 
   return (
     <Container>
-      <div>
-        <div className="Team">
-          <form
-            onSubmit={(event) => {
-              const pokemons = HandleSubmitA(event, valueA, pokemonsTeamA);
-              setPokemonsTeamA(pokemons);
-            }}
-          >
-            <label> Time A </label>
+      <Team teamColor="#409AE1">
+        <form
+          onSubmit={(event) => {
+            const pokemons = HandleSubmitA(event, valueA, pokemonsTeamA);
+            setPokemonsTeamA(pokemons);
+          }}
+        >
+          <label> Time A </label>
+          <div>
             <input
               disabled={disableA}
               type="text"
@@ -40,35 +111,33 @@ const Home = () => {
             <button
               disabled={disableA}
               type="submit"
-              onClick={() => {
-                setPokemonTotalA(LimitPokemonA(pokemonTotalA));
-                setDisableA(DisableA(pokemonTotalA));
-              }}
+              onClick={() => VerificationA()}
             >
               Adicionar
             </button>
-            {disableA ? (
-              <p> Limite máximo de pokemons por time atingido</p>
-            ) : (
-              <></>
-            )}
-          </form>
-          <ul>
-            {pokemonsTeamA.map((pokemon, index) => (
-              <li key={index}>
-                <p> {pokemon} </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="Team">
-          <form
-            onSubmit={(event) => {
-              const pokemons = HandleSubmitB(event, valueB, pokemonsTeamB);
-              setPokemonsTeamB(pokemons);
-            }}
-          >
-            <label> Time B </label>
+          </div>
+          {disableA ? (
+            <Error> Limite máximo de pokemons por time atingido</Error>
+          ) : (
+            <></>
+          )}
+          {errorA ? <Error> Você deve adicionar um pokemon </Error> : <></>}
+        </form>
+        {pokemonsTeamA.map((pokemon, index) => (
+          <dt key={index}>
+            <p> {pokemon} </p>
+          </dt>
+        ))}
+      </Team>
+      <Team>
+        <form
+          onSubmit={(event) => {
+            const pokemons = HandleSubmitB(event, valueB, pokemonsTeamB);
+            setPokemonsTeamB(pokemons);
+          }}
+        >
+          <label> Time B </label>
+          <div>
             <input
               disabled={disableB}
               type="text"
@@ -77,33 +146,37 @@ const Home = () => {
             <button
               disabled={disableB}
               type="submit"
-              onClick={() => {
-                setPokemonTotalB(LimitPokemonB(pokemonTotalB));
-                setDisableB(DisableB(pokemonTotalB));
-              }}
+              onClick={() => VerificationB()}
             >
               Adicionar
             </button>
-            {disableB ? (
-              <p> Limite máximo de pokemons por time atingido</p>
-            ) : (
-              <></>
-            )}
-          </form>
-          <ul>
-            {pokemonsTeamB.map((pokemon, index) => (
-              <li key={index}>
-                <p> {pokemon} </p>
-              </li>
-            ))}
-          </ul>
+          </div>
+          {disableB ? (
+            <Error> Limite máximo de pokemons por time atingido</Error>
+          ) : (
+            <></>
+          )}
+          {errorB ? <Error> Você deve adicionar um pokemon </Error> : <></>}
+        </form>
+        {pokemonsTeamB.map((pokemon, index) => (
+          <dt key={index}>
+            <p> {pokemon} </p>
+          </dt>
+        ))}
+        <div className="ButtonContainer">
+          <button onClick={() => GetPokemonsInfo(pokemonsTeamA, pokemonsTeamB)}>
+            Testar Troca
+          </button>
+          {loadingA && loadingB ? (
+            <></>
+          ) : (
+            <button onClick={() => RedirectViewResults()}>
+              {" "}
+              Ver resultado{" "}
+            </button>
+          )}
         </div>
-      </div>
-      <div>
-        <button onClick={() => Calculator(pokemonsTeamA, pokemonsTeamB)}>
-          Testar Troca
-        </button>
-      </div>
+      </Team>
     </Container>
   );
 };
