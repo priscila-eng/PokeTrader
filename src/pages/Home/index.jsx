@@ -8,7 +8,7 @@ import {
   LimitPokemonA,
   LimitPokemonB,
 } from "../../components/Pokemons";
-import api from "../../services/api";
+import api from "../../services/apiPokemon";
 import { history } from "../../utils/history";
 import { Container, Team, Error } from "./style";
 

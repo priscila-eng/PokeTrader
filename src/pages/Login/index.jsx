@@ -11,16 +11,23 @@ const Login = () => {
   const CreateUser = () => {
     if (username !== undefined) {
       apiUser
-        .post("/users", { username: username })
+        .get(`/find_user/${username}`)
         .then(() => {
-          alert("Bem vind@!");
+          alert("Ainda bem que você voltou");
           history.push("/calculator");
           window.location.reload();
         })
         .catch(() => {
-          alert("Ainda bem que você voltou");
-          history.push("/calculator");
-          window.location.reload();
+          apiUser
+            .post("/users", { username: username })
+            .then(() => {
+              alert("Bem vind@!");
+              history.push("/calculator");
+              window.location.reload();
+            })
+            .catch(() => {
+              alert("Problema na requisição");
+            });
         });
     } else {
       setError(true);
