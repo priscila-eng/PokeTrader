@@ -23,6 +23,22 @@ export const Container = styled.div`
   dt {
     text-align: center;
   }
+  .icon-signout {
+    color: darkblue;
+    position: relative;
+    top: 2rem;
+    left: 2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .icon {
+    color: darkblue;
+    position: relative;
+    top: 2rem;
+    left: 39rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
 `;
 
 export const Team = styled.div`

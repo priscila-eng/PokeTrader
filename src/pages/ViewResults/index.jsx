@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import { history } from "../../utils/history";
 import { Container, PokemonCard, Title } from "./styles";
 
 const ViewResults = () => {
   const [pokemonsA, setPokemonsA] = useState([]);
   const [pokemonsB, setPokemonsB] = useState([]);
-  const [historyPokemonsA, setHistoryPokemonsA] = useState([]);
-  const [historyPokemonsB, setHistoryPokemonsB] = useState([]);
   const [experienceA, setExperienceA] = useState(0);
   const [experienceB, setExperienceB] = useState(0);
   const [loadingA, setLoadingA] = useState(true);
@@ -36,10 +35,23 @@ const ViewResults = () => {
   }, [loadingA, loadingB]);
 
   const HandleClick = () => {
-    setHistoryPokemonsA(JSON.parse(localStorage.getItem("pokemonsA")));
-    setHistoryPokemonsB(JSON.parse(localStorage.getItem("pokemonsB")));
-    historyPokemonsA.push(pokemonsA);
-    historyPokemonsB.push(pokemonsB);
+    const historyPokemons = [];
+    const auxiliar = JSON.parse(localStorage.getItem("pokemonA"));
+    if (auxiliar != null) {
+      historyPokemons.push(auxiliar);
+    }
+    localStorage.setItem(
+      "pokemonA",
+      JSON.stringify(
+        historyPokemons.concat({
+          pokemonA: pokemonsA,
+          pokemonB: pokemonsB,
+        })
+      )
+    );
+    history.push("/calculator");
+    window.location.reload();
+    console.log(JSON.parse(localStorage.getItem("pokemonA")));
   };
 
   return (

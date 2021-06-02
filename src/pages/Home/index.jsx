@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaHistory } from "react-icons/fa";
 
 import {
   DisableA,
@@ -129,6 +130,14 @@ const Home = () => {
         ))}
       </Team>
       <Team>
+        <FaHistory
+          className="icon"
+          name="Visualizar histórico de trocas"
+          onClick={() => {
+            history.push("/history");
+            window.location.reload();
+          }}
+        />
         <form
           onSubmit={(event) => {
             const pokemons = HandleSubmitB(event, valueB, pokemonsTeamB);
