@@ -101,7 +101,7 @@ const Home = () => {
             setPokemonsTeamA(pokemons);
           }}
         >
-          <label> Time A </label>
+          <label className="Team"> Time A </label>
           <div>
             <input
               disabled={disableA}
@@ -132,7 +132,7 @@ const Home = () => {
       <Team>
         <FaHistory
           className="icon"
-          name="Visualizar histórico de trocas"
+          title="Visualizar histórico de trocas"
           onClick={() => {
             history.push("/history");
             window.location.reload();

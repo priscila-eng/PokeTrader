@@ -5,27 +5,26 @@ import { history } from "../../utils/history";
 import { Teams, PokemonCard, Container, Header } from "./style";
 
 const TradeHistory = () => {
-  const [trades] = useState([]);
+  const [trades, setTrades] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const tradesHistory = JSON.parse(localStorage.getItem("pokemonA"));
-    trades.push(tradesHistory[0][0]);
-    tradesHistory.shift();
-    tradesHistory.forEach((history) => {
-      trades.push(history);
-    });
-    setLoading(false);
+    if (tradesHistory !== null) {
+      setTrades(tradesHistory);
+      setLoading(false);
+    }
   }, [loading]);
+  console.log(trades);
 
   return (
     <Container>
       {loading ? (
-        <p> Carregando... </p>
+        <p className="Title"> Você não possui trocas ainda </p>
       ) : (
         <>
           <Header>
             <FaArrowCircleLeft
-              name="Voltar"
+              title="Voltar"
               onClick={() => {
                 history.push("/");
                 window.location.reload();

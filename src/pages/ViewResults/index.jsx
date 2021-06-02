@@ -37,21 +37,29 @@ const ViewResults = () => {
   const HandleClick = () => {
     const historyPokemons = [];
     const auxiliar = JSON.parse(localStorage.getItem("pokemonA"));
-    if (auxiliar != null) {
-      historyPokemons.push(auxiliar);
+    if (auxiliar !== null) {
+      localStorage.setItem(
+        "pokemonA",
+        JSON.stringify(
+          auxiliar.concat({
+            pokemonA: pokemonsA,
+            pokemonB: pokemonsB,
+          })
+        )
+      );
+    } else {
+      localStorage.setItem(
+        "pokemonA",
+        JSON.stringify(
+          historyPokemons.concat({
+            pokemonA: pokemonsA,
+            pokemonB: pokemonsB,
+          })
+        )
+      );
     }
-    localStorage.setItem(
-      "pokemonA",
-      JSON.stringify(
-        historyPokemons.concat({
-          pokemonA: pokemonsA,
-          pokemonB: pokemonsB,
-        })
-      )
-    );
-    history.push("/calculator");
+    history.push("/");
     window.location.reload();
-    console.log(JSON.parse(localStorage.getItem("pokemonA")));
   };
 
   return (
@@ -114,8 +122,10 @@ const ViewResults = () => {
                 );
               })}
             </div>
+            <button onClick={() => HandleClick()}>
+              Salvar troca e continuar trocando
+            </button>
           </div>
-          <button onClick={() => HandleClick()}> Continuar trocando </button>
         </div>
       )}
     </Container>

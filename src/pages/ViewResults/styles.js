@@ -17,6 +17,18 @@ export const Container = styled.div`
     flex-wrap: wrap;
     padding: 1rem;
   }
+  button {
+    background-color: white;
+    color: darkblue;
+    height: 2rem;
+    cursor: pointer;
+    border: 1px solid darkblue;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+  button:hover {
+    background-color: #7fffd4;
+  }
 `;
 
 export const PokemonCard = styled.div`
